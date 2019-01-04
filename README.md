@@ -24,3 +24,14 @@ I put the text of that license page as of 27-Dec-2018 into
 I ported dtd2xsd to GitHub because I wanted some changes and it doesn't
 seem very likely that after 18+ years of no attention the W3C will
 update the official copy.  :-)
+
+* Most importantly, enhanced tool to allow more than one attribute
+for an element.  (Oddly, the tool already had logic to do it, but it
+was not used.)
+
+* Changed the [shebang](https://en.wikipedia.org/wiki/Shebang_(Unix))
+to "#!/usr/bin/env perl" so that it looks up the Perl interpreter via
+the user's PATH.
+
+* Made successful execution silent (i.e. removed "Open mapping ... successful"
+message).

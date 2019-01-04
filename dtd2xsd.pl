@@ -1,12 +1,14 @@
-#! perl
+#!/usr/bin/env perl
 #
 # by Dan Connolly http://www.w3.org/People/Connolly/ connolly@w3.org
 #    Bert Bos http://www.w3.org/People/Bos/ <bert@w3.org>
 #    Yuichi Koike
 #    Mary Holstege (holstege@mathling.com)
+#    Steve Ford (sford) https://github.com/fordsfords
 # initial hack by DC Apr 2000, based on dtd2bnf by BB Mar 1998;
 # major revision to Apr 2000 make it actually usable by YK;
 # tweaks by DC; major update Jan 2001 by MH
+# Extended by sford in Dec 2018 to support multiple attributes in an element.
 #
 # see Log since then at end.
 # $Id: dtd2xsd.pl,v 1.17 2001/01/19 05:59:12 connolly Exp $
@@ -72,13 +74,11 @@ $alias_dic{"Boolean"} = "boolean";
 
 if ( $mapping_file )
 {
-	 print STDERR "Open mapping $mapping_file ";
 	 if ( !open( MAPPINGS, "<$mapping_file" ) )
 	 {
-		  print STDERR "unsuccessful.\n";
+		  print STDERR "dtd2xsd.pl: Error opening mapping $mapping_file.\n";
 	 }
 	 else {
-		  print STDERR "successful.\n";
 		  while ( <MAPPINGS> ) {
 				chop;
 				if ( /^alias\s+([^ \t]+)\s*=\s*([^ \t]+)\s*/i ) {
@@ -646,7 +646,12 @@ sub store_att
 {
 	 my ($element, $atts) = @_;
 	 my @words = parsewords($atts);
-	 $attributes{$element} = [ @words ];
+	 if (defined($attributes{$element})) {
+       my $a = $attributes{$element};
+       push(@$a, @words);
+     } else {
+	   $attributes{$element} = [ @words ];
+	 }
 	 return '';
 }
 
@@ -778,15 +783,12 @@ sub openFile {
 	 my %extent;
 	 my $bufbuf;
 	 if ($file ne "") {
-		  print STDERR "open $file ";
 		  if(! open AAA, $file) {
-				print STDERR " failed!!\n";
+				print STDERR "dtd2xsd.pl: Error opening $file.\n";
 				return "";
 		  }
-		  print STDERR " successful\n";
 		  $bufbuf = <AAA>;
 	 } else {
-		  print STDERR "open STDIN successful\n";
 		  $bufbuf = <>;
 	 }
 
